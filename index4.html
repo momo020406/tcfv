@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCFV 交易系統資料成長說明</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+  margin:0;
+  font-family:"Microsoft JhengHei",Arial,sans-serif;
+  background:#f2f6fb;
+  color:#111827;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:24px 16px;
+}
+
+.hero{
+  background:linear-gradient(135deg,#123c69,#1d4ed8);
+  color:white;
+  padding:36px;
+  border-radius:24px;
+  margin-bottom:24px;
+  box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.hero h1{
+  font-size:42px;
+  margin:0 0 18px 0;
+}
+
+.hero p{
+  font-size:25px;
+  line-height:1.9;
+  margin:0;
+}
+
+.big-cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  margin-bottom:24px;
+}
+
+.card{
+  background:white;
+  border-radius:24px;
+  padding:28px;
+  text-align:center;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.card .title{
+  font-size:24px;
+  color:#475569;
+}
+
+.card .num{
+  font-size:52px;
+  font-weight:bold;
+  color:#1d4ed8;
+  margin:16px 0;
+}
+
+.card .note{
+  font-size:20px;
+  color:#334155;
+}
+
+.section{
+  background:white;
+  border-radius:24px;
+  padding:30px;
+  margin-bottom:24px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.section h2{
+  font-size:34px;
+  margin-top:0;
+}
+
+.explain{
+  font-size:25px;
+  line-height:2;
+  background:#eff6ff;
+  border-left:10px solid #2563eb;
+  padding:26px;
+  border-radius:18px;
+}
+
+.warning{
+  font-size:25px;
+  line-height:2;
+  background:#fff7ed;
+  border-left:10px solid #f97316;
+  padding:26px;
+  border-radius:18px;
+}
+
+.chart-box{
+  height:460px;
+}
+
+.simple-list{
+  font-size:26px;
+  line-height:2.2;
+}
+
+.footer{
+  text-align:center;
+  color:#64748b;
+  font-size:16px;
+  margin-top:20px;
+}
+
+@media(max-width:800px){
+
+  .big-cards{
+    grid-template-columns:1fr;
+  }
+
+  .hero h1{
+    font-size:34px;
+  }
+
+  .hero p,
+  .explain,
+  .warning,
+  .simple-list{
+    font-size:22px;
+  }
+
+  .card .num{
+    font-size:42px;
+  }
+
+  .chart-box{
+    height:360px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="hero">
+
+    <h1>交易系統資料量已經明顯成長</h1>
+
+    <p>
+      果菜公司交易系統從 2010 年到 2025 年，
+      累積交易資料已經超過 <b>2,175 萬筆</b>。<br><br>
+
+      這代表系統不是只有「每天能用」而已，
+      背後的資料庫、備份、查詢、報表和維護壓力都越來越重。
+    </p>
+
+  </div>
+
+  <div class="big-cards">
+
+    <div class="card">
+      <div class="title">累積交易資料</div>
+      <div class="num">2,175萬筆</div>
+      <div class="note">2010 到 2025 年累計</div>
+    </div>
+
+    <div class="card">
+      <div class="title">每年新增資料</div>
+      <div class="num">約150萬筆</div>
+      <div class="note">近年每年交易量</div>
+    </div>
+
+    <div class="card">
+      <div class="title">系統運作期間</div>
+      <div class="num">16年</div>
+      <div class="note">2010 到 2025 持續運作</div>
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <h2>一、每年大約新增多少交易資料？</h2>
+
+    <div class="chart-box">
+      <canvas id="annualChart"></canvas>
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <h2>二、累積資料量越來越大</h2>
+
+    <div class="chart-box">
+      <canvas id="cumulativeChart"></canvas>
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <h2>三、用簡單話說明</h2>
+
+    <div class="explain">
+
+      以前資料少，系統維護比較單純。<br>
+
+      現在交易資料已經累積到 <b>2,175 萬筆以上</b>，
+      每年還會再增加大約 <b>150 萬筆</b>。<br><br>
+
+      所以系統維護已經不是只有修程式，
+      還包括資料庫整理、備份、查詢速度、報表穩定性與交易不中斷。<br><br>
+
+      目前系統仍使用 SQL Server 2008 R2 標準版架構，
+      已屬於較老舊版本，未來應逐步規劃升級企業級資料庫架構，
+      以因應長期資料成長與未來 AI、大數據分析需求。
+
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <h2>四、為什麼要考慮升級資料庫？</h2>
+
+    <div class="warning">
+
+      目前交易系統仍採用 SQL Server 2008 R2 Standard 標準版架構，
+      對於長期大型交易系統而言，未來會逐漸面臨：<br><br>
+
+      • 資料量持續增加<br>
+      • 備份時間變長<br>
+      • 查詢速度下降<br>
+      • 系統維護風險提高<br>
+      • 未來 AI 與大數據分析能力不足<br><br>
+
+      為果菜公司長遠發展，
+      建議逐步評估升級企業級資料庫架構，
+      強化系統穩定性、資料安全性與未來擴充能力。
+
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <h2>五、資料庫標準版與企業版差異</h2>
+
+    <div class="explain">
+
+      <table style="width:100%;font-size:22px;border-collapse:collapse;line-height:1.8">
+
+        <tr style="background:#1d4ed8;color:white">
+          <th style="padding:14px">項目</th>
+          <th style="padding:14px">標準版 Standard</th>
+          <th style="padding:14px">企業版 Enterprise</th>
+        </tr>
+
+        <tr>
+          <td style="padding:14px;border-bottom:1px solid #ddd">適用規模</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">中小型系統</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">大型長期交易系統</td>
+        </tr>
+
+        <tr>
+          <td style="padding:14px;border-bottom:1px solid #ddd">資料處理能力</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">一般</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">較適合大量資料</td>
+        </tr>
+
+        <tr>
+          <td style="padding:14px;border-bottom:1px solid #ddd">查詢效能</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">一般</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">較佳</td>
+        </tr>
+
+        <tr>
+          <td style="padding:14px;border-bottom:1px solid #ddd">備份與還原</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">基本功能</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">較完整</td>
+        </tr>
+
+        <tr>
+          <td style="padding:14px;border-bottom:1px solid #ddd">系統穩定性</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">一般</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">高可用性架構</td>
+        </tr>
+
+        <tr>
+          <td style="padding:14px;border-bottom:1px solid #ddd">AI / 大數據應用</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">較受限制</td>
+          <td style="padding:14px;border-bottom:1px solid #ddd">較適合長期發展</td>
+        </tr>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <h2>六、給管理階層看的重點</h2>
+
+    <div class="simple-list">
+
+      ✅ 交易系統是市場每天營運的核心。<br>
+
+      ✅ 交易資料已累積超過 <b>2,175 萬筆</b>。<br>
+
+      ✅ 每年還會增加約 <b>150 萬筆</b>。<br>
+
+      ✅ 系統已連續運作超過 <b>16 年</b>。<br>
+
+      ✅ SQL Server 2008 R2 已屬老舊架構。<br>
+
+      ✅ 升級資料庫是保護公司長期營運的重要投資。
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+
+    資料來源：TCFV.dbo.AUCTION，統計欄位：CREATION_DATE
+
+  </div>
+
+</div>
+
+<script>
+
+const years = [
+  2010,2011,2012,2013,2014,2015,2016,
+  2017,2018,2019,2020,2021,2022,2023,
+  2024,2025
+];
+
+const annualRaw = [
+  1053719,1104544,1154663,1267561,
+  1243132,1301275,1269834,1342619,
+  1390102,1479023,1522757,1483805,
+  1548925,1540315,1515198,1533567
+];
+
+const cumulativeRaw = [
+  1053719,2158263,3312926,4580487,
+  5823619,7124894,8394728,9737347,
+  11127449,12606472,14129229,15613034,
+  17161959,18702274,20217472,21751039
+];
+
+const annualMillion = annualRaw.map(v => +(v / 1000000).toFixed(2));
+const cumulativeMillion = cumulativeRaw.map(v => +(v / 1000000).toFixed(2));
+
+new Chart(document.getElementById("annualChart"), {
+
+  type: "bar",
+
+  data: {
+    labels: years,
+    datasets: [{
+      label: "每年交易量（百萬筆）",
+      data: annualMillion,
+      backgroundColor: "rgba(37,99,235,0.75)"
+    }]
+  },
+
+  options: {
+    responsive:true,
+    maintainAspectRatio:false,
+
+    plugins:{
+      legend:{
+        labels:{
+          font:{size:22}
+        }
+      },
+
+      tooltip:{
+        callbacks:{
+          label: ctx => `${ctx.raw} 百萬筆`
+        }
+      }
+    },
+
+    scales:{
+      x:{
+        ticks:{
+          font:{size:18}
+        }
+      },
+
+      y:{
+        ticks:{
+          font:{size:18},
+          callback:v => v + " 百萬"
+        }
+      }
+    }
+  }
+});
+
+new Chart(document.getElementById("cumulativeChart"), {
+
+  type: "line",
+
+  data: {
+    labels: years,
+    datasets: [{
+      label: "累積交易量（百萬筆）",
+      data: cumulativeMillion,
+      borderColor:"rgba(220,38,38,0.95)",
+      backgroundColor:"rgba(220,38,38,0.15)",
+      borderWidth:5,
+      pointRadius:6,
+      tension:0.25,
+      fill:true
+    }]
+  },
+
+  options: {
+    responsive:true,
+    maintainAspectRatio:false,
+
+    plugins:{
+      legend:{
+        labels:{
+          font:{size:22}
+        }
+      },
+
+      tooltip:{
+        callbacks:{
+          label: ctx => `${ctx.raw} 百萬筆`
+        }
+      }
+    },
+
+    scales:{
+      x:{
+        ticks:{
+          font:{size:18}
+        }
+      },
+
+      y:{
+        ticks:{
+          font:{size:18},
+          callback:v => v + " 百萬"
+        }
+      }
+    }
+  }
+});
+
+</script>
+
+</body>
+</html>
