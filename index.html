@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TCFV 交易系統資料成長與資料庫升級建議</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 32px 20px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0f172a, #1e40af);
+      color: white;
+      padding: 38px;
+      border-radius: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 34px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      line-height: 1.8;
+      max-width: 980px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    }
+
+    .label {
+      color: #64748b;
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+
+    .value {
+      font-size: 30px;
+      font-weight: bold;
+      color: #0f172a;
+    }
+
+    .note {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #475569;
+    }
+
+    .section {
+      background: white;
+      border-radius: 22px;
+      padding: 28px;
+      margin-bottom: 28px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    }
+
+    .section h2 {
+      margin-top: 0;
+      font-size: 26px;
+      color: #0f172a;
+    }
+
+    .chart-box {
+      height: 430px;
+    }
+
+    .summary {
+      font-size: 18px;
+      line-height: 1.9;
+      background: #eef6ff;
+      border-left: 6px solid #2563eb;
+      padding: 22px;
+      border-radius: 14px;
+    }
+
+    .warning {
+      font-size: 18px;
+      line-height: 1.9;
+      background: #fff7ed;
+      border-left: 6px solid #f97316;
+      padding: 22px;
+      border-radius: 14px;
+    }
+
+    .upgrade {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .upgrade-item {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .upgrade-item h3 {
+      margin-top: 0;
+      color: #1e40af;
+      font-size: 20px;
+    }
+
+    .upgrade-item p {
+      line-height: 1.8;
+      font-size: 16px;
+      color: #334155;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      font-size: 16px;
+    }
+
+    th {
+      background: #1e40af;
+      color: white;
+      padding: 12px;
+    }
+
+    td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+      margin-top: 28px;
+    }
+
+    @media (max-width: 900px) {
+      .cards, .upgrade {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .cards, .upgrade {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-box {
+        height: 360px;
+      }
+
+      .hero {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="hero">
+    <h1>TCFV 交易系統資料成長與資料庫升級建議</h1>
+    <p>
+      本頁彙整交易系統自 2010 年至 2023 年之年度交易筆數與累積交易資料量，
+      用以說明果菜公司交易系統長期運作後，資料量、查詢量、備份需求與維護負擔均逐年提升。
+      為公司長遠發展，應同步評估資料庫版本與架構升級，以支援未來交易系統、報表查詢、
+      AI 分析與大數據應用需求。
+    </p>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="label">統計期間</div>
+      <div class="value">2010–2023</div>
+      <div class="note">共 14 個年度</div>
+    </div>
+
+    <div class="card">
+      <div class="label">累積交易筆數</div>
+      <div class="value">18,702,274</div>
+      <div class="note">AUCTION 主交易表</div>
+    </div>
+
+    <div class="card">
+      <div class="label">最高年度交易量</div>
+      <div class="value">1,548,925</div>
+      <div class="note">2022 年</div>
+    </div>
+
+    <div class="card">
+      <div class="label">目前資料庫容量</div>
+      <div class="value">約 29 GB</div>
+      <div class="note">TCFV Database</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>一、年度交易筆數趨勢</h2>
+    <div class="chart-box">
+      <canvas id="annualChart"></canvas>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>二、累積交易資料量成長</h2>
+    <div class="chart-box">
+      <canvas id="cumulativeChart"></canvas>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>三、資料成長對系統維護的影響</h2>
+    <div class="summary">
+      交易系統每年約產生 100 萬至 150 萬筆以上交易資料，至 2023 年累積已達
+      1,870 萬筆以上。資料量長期累積後，系統維護工作已不僅是程式維修，
+      更包含資料庫容量管理、備份作業、查詢效能調校、報表產出、交易穩定性與異常排除。
+      因此，維護廠商投入之技術支援與系統維運工作量，應納入整體維護成本評估。
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>四、資料庫版本與長期升級必要性</h2>
+    <div class="warning">
+      目前交易系統若仍採用 SQL Server 2008 Standard 標準版架構，
+      對於長期累積型交易資料庫而言，未來在資料成長、備份效率、查詢效能、
+      高可用性、災難復原與大數據分析方面，將逐漸面臨架構限制。
+      為果菜公司長遠發展，建議評估升級為企業級資料庫版本與架構。
+    </div>
+
+    <div class="upgrade">
+      <div class="upgrade-item">
+        <h3>1. 支援大量資料處理</h3>
+        <p>
+          企業級資料庫版本較適合長期累積型交易系統，可支援更大的資料量、
+          更複雜的查詢需求與更高的系統負載。
+        </p>
+      </div>
+
+      <div class="upgrade-item">
+        <h3>2. 提升查詢與報表效能</h3>
+        <p>
+          隨著交易資料逐年累積，歷史查詢、結帳報表、統計分析會越來越吃重。
+          升級企業級架構有助於提升查詢效率與報表產出穩定性。
+        </p>
+      </div>
+
+      <div class="upgrade-item">
+        <h3>3. 強化備份與災難復原</h3>
+        <p>
+          交易系統屬於市場營運核心系統，若發生資料庫損毀或主機異常，
+          會直接影響拍賣、結帳與報表作業，因此需強化備份、還原與容錯能力。
+        </p>
+      </div>
+
+      <div class="upgrade-item">
+        <h3>4. 因應未來 AI 與大數據應用</h3>
+        <p>
+          未來若要導入 AI 分析、交易趨勢預測、承銷人行為分析或農產品價格分析，
+          需要更穩定且可擴充的資料庫平台作為基礎。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>五、給管理階層的結論</h2>
+    <div class="summary">
+      本交易系統已由早期單純交易處理平台，逐步發展為支撐市場營運之核心資訊系統。
+      隨著交易筆數與資料量持續增加，現行資料庫與系統架構應提前規劃升級，
+      以降低未來系統效能下降、備份時間拉長、查詢延遲與營運中斷風險。
+      資料庫升級不應只視為軟體採購，而是果菜公司長期資訊基礎建設投資。
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>六、年度交易資料表</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>年度</th>
+          <th>年交易筆數</th>
+          <th>累積交易筆數</th>
+        </tr>
+      </thead>
+      <tbody id="dataTable"></tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    資料來源：TCFV.dbo.AUCTION，統計欄位：CREATION_DATE，產製日期：2026/05/16
+  </div>
+
+</div>
+
+<script>
+  const years = [
+    2010, 2011, 2012, 2013, 2014, 2015, 2016,
+    2017, 2018, 2019, 2020, 2021, 2022, 2023
+  ];
+
+  const annualData = [
+    1053719, 1104544, 1154663, 1267561, 1243132, 1301275, 1269834,
+    1342619, 1390102, 1479023, 1522757, 1483805, 1548925, 1540315
+  ];
+
+  const cumulativeData = [
+    1053719, 2158263, 3312926, 4580487, 5823619, 7124894, 8394728,
+    9737347, 11127449, 12606472, 14129229, 15613034, 17161959, 18702274
+  ];
+
+  function formatNumber(num) {
+    return num.toLocaleString("zh-TW");
+  }
+
+  new Chart(document.getElementById("annualChart"), {
+    type: "bar",
+    data: {
+      labels: years,
+      datasets: [{
+        label: "年交易筆數",
+        data: annualData,
+        backgroundColor: "rgba(37, 99, 235, 0.75)",
+        borderColor: "rgba(37, 99, 235, 1)",
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { font: { size: 16 } } },
+        tooltip: {
+          callbacks: {
+            label: context => "年交易筆數：" + formatNumber(context.raw) + " 筆"
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { font: { size: 14 } } },
+        y: {
+          ticks: {
+            font: { size: 14 },
+            callback: value => formatNumber(value)
+          }
+        }
+      }
+    }
+  });
+
+  new Chart(document.getElementById("cumulativeChart"), {
+    type: "line",
+    data: {
+      labels: years,
+      datasets: [{
+        label: "累積交易筆數",
+        data: cumulativeData,
+        borderColor: "rgba(220, 38, 38, 0.9)",
+        backgroundColor: "rgba(220, 38, 38, 0.15)",
+        borderWidth: 4,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        tension: 0.25,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { font: { size: 16 } } },
+        tooltip: {
+          callbacks: {
+            label: context => "累積交易筆數：" + formatNumber(context.raw) + " 筆"
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { font: { size: 14 } } },
+        y: {
+          ticks: {
+            font: { size: 14 },
+            callback: value => formatNumber(value)
+          }
+        }
+      }
+    }
+  });
+
+  const tbody = document.getElementById("dataTable");
+
+  years.forEach((year, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${year}</td>
+      <td>${formatNumber(annualData[index])}</td>
+      <td>${formatNumber(cumulativeData[index])}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+</script>
+
+</body>
+</html>
