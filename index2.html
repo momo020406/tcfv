@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>交易系統資料成長說明</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:"Microsoft JhengHei",Arial,sans-serif;
+  background:#f2f6fb;
+  color:#111827;
+}
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:24px 16px;
+}
+.hero{
+  background:linear-gradient(135deg,#123c69,#1d4ed8);
+  color:white;
+  padding:34px;
+  border-radius:24px;
+  margin-bottom:24px;
+}
+.hero h1{
+  font-size:40px;
+  margin:0 0 16px 0;
+}
+.hero p{
+  font-size:24px;
+  line-height:1.8;
+  margin:0;
+}
+.big-cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  margin-bottom:24px;
+}
+.card{
+  background:white;
+  border-radius:24px;
+  padding:28px;
+  text-align:center;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+.card .title{
+  font-size:22px;
+  color:#475569;
+}
+.card .num{
+  font-size:46px;
+  font-weight:bold;
+  color:#1d4ed8;
+  margin:14px 0;
+}
+.card .note{
+  font-size:20px;
+  color:#334155;
+}
+.section{
+  background:white;
+  border-radius:24px;
+  padding:30px;
+  margin-bottom:24px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+.section h2{
+  font-size:32px;
+  margin-top:0;
+}
+.explain{
+  font-size:24px;
+  line-height:1.9;
+  background:#eff6ff;
+  border-left:10px solid #2563eb;
+  padding:24px;
+  border-radius:18px;
+}
+.warning{
+  font-size:24px;
+  line-height:1.9;
+  background:#fff7ed;
+  border-left:10px solid #f97316;
+  padding:24px;
+  border-radius:18px;
+}
+.chart-box{
+  height:430px;
+}
+.simple-list{
+  font-size:24px;
+  line-height:2;
+}
+.footer{
+  text-align:center;
+  color:#64748b;
+  font-size:16px;
+  margin-top:20px;
+}
+@media(max-width:800px){
+  .big-cards{grid-template-columns:1fr;}
+  .hero h1{font-size:32px;}
+  .hero p,.explain,.warning,.simple-list{font-size:21px;}
+  .card .num{font-size:40px;}
+  .chart-box{height:360px;}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="hero">
+  <h1>交易系統資料量已經明顯成長</h1>
+  <p>
+    果菜公司交易系統從 2010 年到 2023 年，
+    累積交易資料已經超過 <b>1,870 萬筆</b>。
+    這代表系統不是只有「每天能用」而已，
+    背後的資料庫、備份、查詢、報表和維護壓力都越來越重。
+  </p>
+</div>
+
+<div class="big-cards">
+  <div class="card">
+    <div class="title">累積交易資料</div>
+    <div class="num">1,870萬筆</div>
+    <div class="note">2010 到 2023 年累計</div>
+  </div>
+
+  <div class="card">
+    <div class="title">每年新增資料</div>
+    <div class="num">約150萬筆</div>
+    <div class="note">近年每年交易量</div>
+  </div>
+
+  <div class="card">
+    <div class="title">資料庫大小</div>
+    <div class="num">約29GB</div>
+    <div class="note">資料持續累積中</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>一、每年大約新增多少交易資料？</h2>
+  <div class="chart-box">
+    <canvas id="annualChart"></canvas>
+  </div>
+</div>
+
+<div class="section">
+  <h2>二、累積資料量越來越大</h2>
+  <div class="chart-box">
+    <canvas id="cumulativeChart"></canvas>
+  </div>
+</div>
+
+<div class="section">
+  <h2>三、用簡單話說明</h2>
+  <div class="explain">
+    以前資料少，系統維護比較單純。<br>
+    現在交易資料已經累積到 <b>1,870 萬筆以上</b>，
+    每年還會再增加大約 <b>150 萬筆</b>。
+    所以系統維護已經不是只有修程式，
+    還包括資料庫整理、備份、查詢速度、報表穩定性與交易不中斷。
+  </div>
+</div>
+
+<div class="section">
+  <h2>四、為什麼要考慮升級資料庫？</h2>
+  <div class="warning">
+    現行若仍以 SQL Server 2008 Standard 標準版作為主要架構，
+    對長期交易系統來說，未來會面臨資料越來越多、
+    備份越來越久、查詢越來越慢、系統風險越來越高的問題。<br><br>
+    為果菜公司長遠發展，建議逐步評估升級為企業級資料庫架構，
+    讓交易系統更穩定，也能支援未來大數據與 AI 分析。
+  </div>
+</div>
+
+<div class="section">
+  <h2>五、給管理階層看的重點</h2>
+  <div class="simple-list">
+    ✅ 交易系統是市場每天營運的核心。<br>
+    ✅ 交易資料已累積超過 <b>1,870 萬筆</b>。<br>
+    ✅ 每年還會增加約 <b>150 萬筆</b>。<br>
+    ✅ 資料越多，維護、備份、查詢、報表壓力越大。<br>
+    ✅ 升級資料庫不是花錢買軟體，而是保護公司長期營運。
+  </div>
+</div>
+
+<div class="footer">
+  資料來源：TCFV.dbo.AUCTION，統計欄位：CREATION_DATE
+</div>
+
+</div>
+
+<script>
+const years = [
+  2010,2011,2012,2013,2014,2015,2016,
+  2017,2018,2019,2020,2021,2022,2023
+];
+
+const annualRaw = [
+  1053719,1104544,1154663,1267561,1243132,1301275,1269834,
+  1342619,1390102,1479023,1522757,1483805,1548925,1540315
+];
+
+const cumulativeRaw = [
+  1053719,2158263,3312926,4580487,5823619,7124894,8394728,
+  9737347,11127449,12606472,14129229,15613034,17161959,18702274
+];
+
+// 改成「百萬筆」呈現，老人家比較容易看懂
+const annualMillion = annualRaw.map(v => +(v / 1000000).toFixed(2));
+const cumulativeMillion = cumulativeRaw.map(v => +(v / 1000000).toFixed(2));
+
+new Chart(document.getElementById("annualChart"), {
+  type: "bar",
+  data: {
+    labels: years,
+    datasets: [{
+      label: "每年交易量，單位：百萬筆",
+      data: annualMillion,
+      backgroundColor: "rgba(37,99,235,0.75)"
+    }]
+  },
+  options: {
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{labels:{font:{size:22}}},
+      tooltip:{
+        callbacks:{
+          label: ctx => `${ctx.raw} 百萬筆，約 ${Math.round(ctx.raw * 100)} 萬筆`
+        }
+      }
+    },
+    scales:{
+      x:{ticks:{font:{size:18}}},
+      y:{
+        title:{
+          display:true,
+          text:"百萬筆",
+          font:{size:22}
+        },
+        ticks:{
+          font:{size:18},
+          callback:v => v + " 百萬"
+        }
+      }
+    }
+  }
+});
+
+new Chart(document.getElementById("cumulativeChart"), {
+  type: "line",
+  data: {
+    labels: years,
+    datasets: [{
+      label: "累積交易量，單位：百萬筆",
+      data: cumulativeMillion,
+      borderColor:"rgba(220,38,38,0.95)",
+      backgroundColor:"rgba(220,38,38,0.15)",
+      borderWidth:5,
+      pointRadius:6,
+      tension:0.25,
+      fill:true
+    }]
+  },
+  options: {
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{labels:{font:{size:22}}},
+      tooltip:{
+        callbacks:{
+          label: ctx => `${ctx.raw} 百萬筆，約 ${Math.round(ctx.raw * 100)} 萬筆`
+        }
+      }
+    },
+    scales:{
+      x:{ticks:{font:{size:18}}},
+      y:{
+        title:{
+          display:true,
+          text:"百萬筆",
+          font:{size:22}
+        },
+        ticks:{
+          font:{size:18},
+          callback:v => v + " 百萬"
+        }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
