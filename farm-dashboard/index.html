@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>本日蔬果批發價</title>
+  <style>
+    body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:0;background:#f4f7f4;color:#243124}
+    .wrap{max-width:1200px;margin:0 auto;padding:28px 18px}
+    h1{text-align:center;margin:0 0 8px;font-size:34px}
+    .sub{text-align:center;color:#667266;margin-bottom:24px}
+    .tabs{display:flex;gap:10px;justify-content:center;margin-bottom:18px}
+    .tab{border:0;border-radius:999px;padding:10px 26px;font-size:17px;cursor:pointer;background:#dfe8df}
+    .tab.active{background:#2f6f3e;color:white}
+    .date{text-align:center;margin-bottom:18px;font-size:17px}
+    .card{background:white;border-radius:14px;box-shadow:0 5px 18px rgba(0,0,0,.08);overflow:auto}
+    table{width:100%;border-collapse:collapse;min-width:760px}
+    th,td{padding:12px 10px;border-bottom:1px solid #e7ece7;text-align:center}
+    th{background:#2f6f3e;color:white;position:sticky;top:0}
+    tr:nth-child(even) td{background:#f8faf8}
+    .status{text-align:center;padding:28px;color:#667266}
+    .footer{text-align:center;color:#7b857b;font-size:14px;margin-top:14px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>本日蔬果批發價</h1>
+  <div class="sub">台中市農產品交易行情臨時看板</div>
+
+  <div class="tabs">
+    <button class="tab active" data-type="N05">水果</button>
+    <button class="tab" data-type="N04">蔬菜</button>
+  </div>
+
+  <div class="date">交易日期：<strong id="tradeDate">讀取中</strong>　(每日上午11時更新資料)</div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>品名代號</th>
+          <th>品名</th>
+          <th>上價</th>
+          <th>中價</th>
+          <th>下價</th>
+          <th>平均價</th>
+          <th>交易量</th>
+        </tr>
+      </thead>
+      <tbody id="rows">
+        <tr><td colspan="7" class="status">資料讀取中...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer" id="updatedAt"></div>
+</div>
+
+<script>
+let allData = [];
+let currentType = 'N05';
+
+function text(v){ return v === undefined || v === null || v === '' ? '-' : v; }
+
+function render(){
+  const rows = document.getElementById('rows');
+  const filtered = allData.filter(x => x['種類代碼'] === currentType);
+  if(!filtered.length){
+    rows.innerHTML = '<tr><td colspan="7" class="status">目前暫無資料</td></tr>';
+    return;
+  }
+  rows.innerHTML = filtered.map(x => `
+    <tr>
+      <td>${text(x['作物代號'])}</td>
+      <td>${text(x['作物名稱'])}</td>
+      <td>${text(x['上價'])}</td>
+      <td>${text(x['中價'])}</td>
+      <td>${text(x['下價'])}</td>
+      <td>${text(x['平均價'])}</td>
+      <td>${text(x['交易量'])}</td>
+    </tr>`).join('');
+}
+
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+    currentType = btn.dataset.type;
+    render();
+  });
+});
+
+fetch('farm-data.json?ts=' + Date.now())
+  .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(payload => {
+    allData = Array.isArray(payload.data) ? payload.data : [];
+    document.getElementById('tradeDate').textContent = payload.tradeDate || '無資料';
+    document.getElementById('updatedAt').textContent = payload.updatedAt ? '最後更新：' + payload.updatedAt : '';
+    render();
+  })
+  .catch(err => {
+    document.getElementById('tradeDate').textContent = '讀取失敗';
+    document.getElementById('rows').innerHTML = '<tr><td colspan="7" class="status">無法讀取行情資料：' + err.message + '</td></tr>';
+  });
+</script>
+</body>
+</html>
