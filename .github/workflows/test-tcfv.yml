@@ -1,0 +1,21 @@
+name: 測試連線到 TCFV
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: HTTPS POST 到 tcfv.com.tw
+        run: |
+          curl \
+            --verbose \
+            --fail-with-body \
+            --connect-timeout 15 \
+            --max-time 30 \
+            --request POST \
+            --header "Content-Type: application/json; charset=utf-8" \
+            --data '{"source":"GitHub Actions","message":"HTTPS POST 測試成功","test_number":12345}' \
+            "https://www.tcfv.com.tw/github_test.aspx"
