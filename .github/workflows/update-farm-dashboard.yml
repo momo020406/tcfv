@@ -1,0 +1,70 @@
+name: 更新蔬果批發價看板
+
+on:
+  schedule:
+    - cron: "15 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 取出儲存庫
+        uses: actions/checkout@v4
+
+      - name: 抓取農業部行情並更新 JSON
+        shell: bash
+        run: |
+          set -e
+
+          TODAY=$(TZ=Asia/Taipei date +%Y-%m-%d)
+          ROC_YEAR=$((10#$(TZ=Asia/Taipei date +%Y) - 1911))
+          TRADE_DATE="${ROC_YEAR}.$(TZ=Asia/Taipei date +%m.%d)"
+
+          URL="https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx"
+
+          curl --fail --silent --show-error --get "$URL" \
+            --data-urlencode '\$top=9999' \
+            --data-urlencode '\$skip=0' \
+            --data-urlencode "StartDate=${TRADE_DATE}" \
+            --data-urlencode "EndDate=${TRADE_DATE}" \
+            --data-urlencode "Market=台中市" \
+            --output raw.json
+
+          python3 - <<'PY'
+          import json
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          with open('raw.json', 'r', encoding='utf-8-sig') as f:
+              data = json.load(f)
+
+          if not isinstance(data, list):
+              raise SystemExit('農業部 API 回傳格式不是陣列')
+
+          trade_date = ''
+          if data:
+              trade_date = str(data[0].get('交易日期', ''))
+
+          payload = {
+              'tradeDate': trade_date,
+              'updatedAt': datetime.now(ZoneInfo('Asia/Taipei')).strftime('%Y-%m-%d %H:%M:%S'),
+              'data': data,
+          }
+
+          with open('farm-dashboard/farm-data.json', 'w', encoding='utf-8') as f:
+              json.dump(payload, f, ensure_ascii=False, indent=2)
+          PY
+
+      - name: 提交更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add farm-dashboard/farm-data.json
+          git diff --cached --quiet && exit 0
+          git commit -m "自動更新蔬果批發價資料"
+          git push
